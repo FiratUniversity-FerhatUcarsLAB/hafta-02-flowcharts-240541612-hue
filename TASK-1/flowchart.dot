@@ -1,0 +1,53 @@
+digraph ATM_System {
+    rankdir=TB;
+    node [shape=rectangle, style=rounded, fontname="Arial"];
+
+    Start [label="Başlangıç", shape=circle, style=filled, fillcolor=lightblue];
+    CardInserted [label="Kart takıldı mı?"];
+    ReadCard [label="Kart okunuyor"];
+    BlockCheck [label="Kart bloke mi?"];
+    PIN_Auth [label="PIN gir\n(3 hakkınız var)"];
+    PIN_Correct [label="PIN doğru mu?"];
+    BlockCard [label="Kart bloke edildi\n3 yanlış giriş"];
+    Menu [label="İşlem Menüsü:\n1) Bakiye\n2) Para Çek\n3) Çıkış"];
+    CheckBalance [label="Bakiye görüntüle"];
+    EnterAmount [label="Çekilecek tutarı gir"];
+    CheckAmount [label="20 TL'nin katı mı?"];
+    CheckBalanceAvail [label="Yeterli bakiye var mı?"];
+    CheckDailyLimit [label="Günlük limit aşılmış mı?"];
+    DispenseCash [label="Para veriliyor\nFiş hazırlanıyor"];
+    UpdateBalance [label="Bakiye güncelleniyor"];
+    AnotherTransaction [label="Başka işlem yapmak ister misiniz?"];
+    Exit [label="Kart iade edildi\nOturum kapandı", shape=doublecircle, style=filled, fillcolor=lightgrey];
+
+    // Akışlar
+    Start -> CardInserted;
+    CardInserted -> ReadCard [label="Evet"];
+    CardInserted -> Start [label="Hayır"];
+    ReadCard -> BlockCheck;
+    BlockCheck -> Exit [label="Evet"];
+    BlockCheck -> PIN_Auth [label="Hayır"];
+    PIN_Auth -> PIN_Correct;
+    PIN_Correct -> Menu [label="Evet"];
+    PIN_Correct -> BlockCard [label="3 hatalı giriş"];
+    BlockCard -> Exit;
+
+    // Menü akışı
+    Menu -> CheckBalance [label="1"];
+    Menu -> EnterAmount [label="2"];
+    Menu -> Exit [label="3"];
+
+    CheckBalance -> AnotherTransaction;
+    EnterAmount -> CheckAmount;
+    CheckAmount -> EnterAmount [label="Hayır"];
+    CheckAmount -> CheckBalanceAvail [label="Evet"];
+    CheckBalanceAvail -> EnterAmount [label="Yetersiz bakiye"];
+    CheckBalanceAvail -> CheckDailyLimit [label="Yeterli bakiye"];
+    CheckDailyLimit -> EnterAmount [label="Limit aşıldı"];
+    CheckDailyLimit -> DispenseCash [label="Uygun"];
+    DispenseCash -> UpdateBalance;
+    UpdateBalance -> AnotherTransaction;
+
+    AnotherTransaction -> Menu [label="Evet"];
+    AnotherTransaction -> Exit [label="Hayır"];
+}
