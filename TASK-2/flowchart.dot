@@ -1,0 +1,70 @@
+digraph OnlineAlisverisSepeti {
+    rankdir=TB;
+    node [shape=box, style=rounded, fontname="Arial"];
+
+    Start [label="BAŞLA"];
+    Giris [label="Kullanıcı girişi (Kullanıcı adı + Şifre)"];
+    GirisKontrol [label="Bilgiler doğru mu?", shape=diamond];
+    GirisBasarili [label="Giriş başarılı"];
+    GirisHatali [label="Hatalı giriş - Tekrar dene"];
+
+    UrunGezinme [label="Ürün kategorilerini listele"];
+    UrunSec [label="Ürün seçimi"];
+    StokKontrol [label="Ürün stokta var mı?", shape=diamond];
+    SepeteEkle [label="Ürünü sepete ekle"];
+    StokYok [label="Stokta yok mesajı"];
+
+    SepetGoruntule [label="Sepeti görüntüle ve düzenle"];
+    IndirimKodu [label="İndirim kodu girildi mi?", shape=diamond];
+    KodGecerli [label="İndirim uygulandı"];
+    KodGecersiz [label="Geçersiz kod"];
+
+    MinTutar [label="Toplam < 50 TL mi?", shape=diamond];
+    MinUyari [label="Minimum 50 TL alışveriş uyarısı"];
+
+    Kargo [label="Kargo ücreti hesapla"];
+    KargoKontrol [label="Toplam ≥ 200 TL mi?", shape=diamond];
+    KargoUcretsiz [label="Kargo: Ücretsiz"];
+    KargoUcretli [label="Kargo: 30 TL"];
+
+    OdemeSecim [label="Ödeme yöntemi seç (Kart / Kapıda)"];
+    OdemeKontrol [label="Yöntem geçerli mi?", shape=diamond];
+    OdemeTekrar [label="Tekrar seçim iste"];
+    SiparisOnay [label="Sipariş onayı al"];
+    Bitir [label="SİPARİŞ TAMAMLANDI", shape=oval, color=green];
+
+    Start -> Giris -> GirisKontrol;
+    GirisKontrol -> GirisBasarili [label="Evet"];
+    GirisKontrol -> GirisHatali [label="Hayır"];
+    GirisHatali -> Giris;
+
+    GirisBasarili -> UrunGezinme -> UrunSec -> StokKontrol;
+    StokKontrol -> SepeteEkle [label="Evet"];
+    StokKontrol -> StokYok [label="Hayır"];
+    SepeteEkle -> SepetGoruntule;
+    StokYok -> UrunSec;
+
+    SepetGoruntule -> IndirimKodu;
+    IndirimKodu -> KodGecerli [label="Evet"];
+    IndirimKodu -> KodGecersiz [label="Hayır"];
+    KodGecerli -> MinTutar;
+    KodGecersiz -> MinTutar;
+
+    MinTutar -> MinUyari [label="Evet"];
+    MinUyari -> UrunSec;
+    MinTutar -> Kargo [label="Hayır"];
+
+    Kargo -> KargoKontrol;
+    KargoKontrol -> KargoUcretsiz [label="Evet"];
+    KargoKontrol -> KargoUcretli [label="Hayır"];
+
+    KargoUcretsiz -> OdemeSecim;
+    KargoUcretli -> OdemeSecim;
+
+    OdemeSecim -> OdemeKontrol;
+    OdemeKontrol -> SiparisOnay [label="Evet"];
+    OdemeKontrol -> OdemeTekrar [label="Hayır"];
+    OdemeTekrar -> OdemeSecim;
+
+    SiparisOnay -> Bitir;
+}
