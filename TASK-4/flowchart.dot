@@ -1,0 +1,57 @@
+digraph DersKayit {
+    rankdir=TB;
+    node [shape=box, style=rounded];
+
+    Basla [label="Başla"];
+    GirisKontrol [label="Öğrenci No ve Şifre ile giriş"];
+    GirisBasarili [label="Giriş Başarılı"];
+    GirisBasarisiz [label="Giriş Başarısız"];
+    DersListele [label="Ders listesini görüntüle (döngü)"];
+    KontenjanKontrol [label="Kontenjan kontrolü"];
+    OnKosulKontrol [label="Ön koşul dersi kontrolü"];
+    ZamanKontrol [label="Zaman çakışması kontrolü"];
+    KrediKontrol [label="Kredi limiti kontrolü (≤35)"];
+    DersIslem [label="Ders ekleme/çıkarma"];
+    DanismanKontrol [label="GPA < 2.5? Danışman onayı gerekli"];
+    KayitOzeti [label="Kayıt özeti göster ve onayla"];
+    KayitTamam [label="Kayıt tamamlandı"];
+    KayitDondur [label="Döngüye dön"];
+
+    Basla -> GirisKontrol;
+    GirisKontrol -> GirisBasarili [label="Doğru"];
+    GirisKontrol -> GirisBasarisiz [label="Yanlış"];
+
+    GirisBasarili -> DersListele;
+
+    DersListele -> KontenjanKontrol;
+    KontenjanKontrol -> OnKosulKontrol [label="Kontenjan var"];
+    KontenjanKontrol -> DersDolu [label="Kontenjan dolu"];
+    DersDolu [shape=diamond, label="Kontenjan dolu!"] -> DersListele;
+
+    OnKosulKontrol -> ZamanKontrol [label="Ön koşul tamam"];
+    OnKosulKontrol -> OnKosulYok [label="Ön koşul eksik"];
+    OnKosulYok [shape=diamond, label="Ön koşul tamamlanmamış!"] -> DersListele;
+
+    ZamanKontrol -> KrediKontrol [label="Zaman uygun"];
+    ZamanKontrol -> ZamanCarpisma [label="Çakışma var"];
+    ZamanCarpisma [shape=diamond, label="Ders zaman çakışması!"] -> DersListele;
+
+    KrediKontrol -> DersIslem [label="Kredi uygun"];
+    KrediKontrol -> KrediAsimi [label="Kredi aşıyor"];
+    KrediAsimi [shape=diamond, label="Kredi limiti aşılıyor!"] -> DersListele;
+
+    DersIslem -> DanismanKontrol;
+
+    DanismanKontrol -> KayitOzeti [label="GPA ≥ 2.5"];
+    DanismanKontrol -> DanismanOnay [label="GPA < 2.5"];
+    DanismanOnay [shape=diamond, label="Danışman onayı alınmalı"] -> KayitOzeti;
+
+    KayitOzeti -> KayitTamam [label="Onaylandı"];
+    KayitOzeti -> KayitDondur [label="Onaylanmadı"];
+    KayitDondur -> DersListele;
+
+    GirisBasarisiz -> Bitir [label=""];
+    KayitTamam -> Bitir;
+    
+    Bitir [shape=oval, label="Bitir"];
+}
