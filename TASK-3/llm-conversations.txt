@@ -1,0 +1,165 @@
+Hastane Randevu ve Tahlil Sistemi için pseudocode yaz Hasta kimlik do˘grulama (TC No) 
+˙ 
+I¸slem se¸cimi: 1-Randevu Al, 2-Tahlil Sonucu G¨or (ko¸sul) 
+Randevu mod¨ul¨u: Poliklinik se¸cimi, doktor listesi, uygun saatler 
+(d¨ong¨u) 
+Randevu onayı ve SMS g¨onderimi 
+Tahlil mod¨ul¨u: Tahlil var mı kontrol¨u (ko¸sul) 
+Sonu¸c hazır mı kontrol¨u (ko¸sul) 
+Sonu¸c g¨or¨unt¨uleme veya bekleme mesajı 
+Sonu¸cları PDF indir se¸cene˘gi 
+Ba¸ska i¸slem yapmak ister misiniz? (d¨ong¨u)
+ChatGPT said:
+
+İşte Hastane Randevu ve Tahlil Sistemi için istenen akışları içeren pseudocode:
+
+🏥 Hastane Randevu ve Tahlil Sistemi — Pseudocode
+BAŞLA
+
+TEKRARLA
+    YAZDIR "Lütfen TC Kimlik Numaranızı Giriniz:"
+    TC <- GİRİŞ
+    EĞER TC GEÇERLİ DEĞİLSE
+        YAZDIR "Geçersiz TC Kimlik Numarası!"
+    DEĞİLSE
+        YAZDIR "Hoşgeldiniz!"
+        YAZDIR "İşlem Seçiniz: 1-Randevu Al, 2-Tahlil Sonucu Gör"
+        SECIM <- GİRİŞ
+
+        EĞER SECIM = 1 İSE
+            YAZDIR "Poliklinik Seçiniz:"
+            POLIKLINIK <- GİRİŞ
+            YAZDIR "Doktor Listesi Gösteriliyor..."
+            DOKTORLAR <- DOKTOR_LISTESI(POLIKLINIK)
+
+            DÖNGÜ HER DOKTOR İÇİN DOKTORLAR
+                YAZDIR DOKTOR.AD
+            SON
+
+            YAZDIR "Doktor Seçiniz:"
+            DOKTOR <- GİRİŞ
+            YAZDIR "Uygun Saatler Listeleniyor..."
+            SAATLER <- UYGUN_SAATLER(DOKTOR)
+
+            DÖNGÜ HER SAAT İÇİN SAATLER
+                YAZDIR SAAT
+            SON
+
+            YAZDIR "Randevu Saati Seçiniz:"
+            SAAT <- GİRİŞ
+            YAZDIR "Randevunuz Onaylandı!"
+            YAZDIR "SMS ile bilgilendirme gönderiliyor..."
+        
+        DEĞİLSE EĞER SECIM = 2 İSE
+            YAZDIR "Tahlil Sonuçları Kontrol Ediliyor..."
+            EĞER TAHLIL_VAR(TC) = HAYIR İSE
+                YAZDIR "Tahlil kaydı bulunamadı."
+            DEĞİLSE
+                EĞER SONUC_HAZIR(TC) = EVET İSE
+                    YAZDIR "Tahlil Sonucunuz Hazır!"
+                    YAZDIR "Sonuç Görüntüleniyor..."
+                    YAZDIR "PDF olarak indirmek ister misiniz? (E/H)"
+                    INDIR <- GİRİŞ
+                    EĞER INDIR = "E" İSE
+                        PDF_INDIR(TC)
+                    SON
+                DEĞİLSE
+                    YAZDIR "Tahlil sonucu henüz hazır değil, lütfen daha sonra tekrar deneyiniz."
+                SON
+            SON
+        DEĞİLSE
+            YAZDIR "Geçersiz Seçim!"
+        SON
+    SON
+
+    YAZDIR "Başka işlem yapmak ister misiniz? (E/H)"
+    DEVAM <- GİRİŞ
+UNTIL DEVAM = "H"
+
+YAZDIR "İyi günler dileriz!"
+BİTİR
+
+
+İstersen bu pseudocode’u Graphviz (dot) diyagramına da dönüştürebilirim.
+Bunu ister misin?
+
+You said:
+bu kodu dot graphiz koduna çevir 
+ChatGPT said:
+
+İşte yukarıdaki Hastane Randevu ve Tahlil Sistemi pseudocode’unun Graphviz (DOT) diyagram kodu:
+
+digraph HastaneRandevuTahlil {
+    rankdir=TB;
+    node [shape=rectangle, style=rounded, fontsize=12];
+
+    Start [label="BAŞLA"];
+    TC [label="TC Kimlik Numarası Gir"];
+    CheckTC [label="TC geçerli mi?", shape=diamond];
+    InvalidTC [label="Geçersiz TC!\nYeniden dene"];
+    Menu [label="İşlem Seç: \n1-Randevu Al \n2-Tahlil Sonucu Gör"];
+    Choice [label="Seçim?", shape=diamond];
+
+    Poliklinik [label="Poliklinik Seç"];
+    DoktorList [label="Doktor Listesini Göster"];
+    SaatList [label="Uygun Saatleri Göster"];
+    RandevuOnay [label="Randevu Onayı ve SMS Gönderimi"];
+
+    TahlilKontrol [label="Tahlil Var mı?", shape=diamond];
+    NoTahlil [label="Tahlil Kaydı Yok"];
+    SonucHazir [label="Sonuç Hazır mı?", shape=diamond];
+    SonucGor [label="Tahlil Sonucunu Göster"];
+    Bekle [label="Sonuç Henüz Hazır Değil"];
+    PDF [label="PDF İndir Seçeneği"];
+
+    Again [label="Başka işlem yapmak ister misiniz?", shape=diamond];
+    End [label="BİTİR"];
+
+    Start -> TC -> CheckTC;
+    CheckTC -> InvalidTC [label="Hayır"];
+    InvalidTC -> TC;
+    CheckTC -> Menu [label="Evet"];
+
+    Menu -> Choice;
+
+    Choice -> Poliklinik [label="1"];
+    Poliklinik -> DoktorList -> SaatList -> RandevuOnay -> Again;
+
+    Choice -> TahlilKontrol [label="2"];
+    TahlilKontrol -> NoTahlil [label="Hayır"];
+    NoTahlil -> Again;
+
+    TahlilKontrol -> SonucHazir [label="Evet"];
+    SonucHazir -> SonucGor [label="Evet"];
+    SonucGor -> PDF -> Again;
+    SonucHazir -> Bekle [label="Hayır"];
+    Bekle -> Again;
+
+    Again -> TC [label="Evet"];
+    Again -> End [label="Hayır"];
+
+    // Estetik düzen
+    {rank=same; Poliklinik; DoktorList; SaatList;}
+}
+
+📘 Kısa Açıklama (5–6 Satır)
+
+Bu Graphviz diyagramı, Hastane Randevu ve Tahlil Sisteminin akışını görsel olarak gösterir.
+Hasta önce TC kimlik doğrulamasından geçer.
+Ardından iki işlem seçeneği sunulur: Randevu alma veya tahlil sonucu görüntüleme.
+Randevu akışında poliklinik, doktor ve saat seçimi yapılır, ardından onay ve SMS gönderimi olur.
+Tahlil akışında sonuç durumu kontrol edilir; hazırsa gösterilir, değilse bekleme mesajı çıkar.
+Kullanıcı isterse başka bir işlem yapabilir veya sistemi sonlandırır.
+
+İstersen bu DOT kodunu görselleştirilmiş bir akış diyagramı (flowchart) olarak da oluşturabilirim — ister misin görsel halini?
+
+You said:
+bunun için kisa açiklama yaz 5-6 satırdan
+ChatGPT said:
+
+Bu Graphviz diyagramı, Hastane Randevu ve Tahlil Sisteminin akışını gösterir.
+Hasta önce TC kimlik doğrulamasından geçer; geçersizse tekrar sorulur.
+Kullanıcı işlem olarak Randevu Al veya Tahlil Sonucu Gör seçeneklerinden birini seçer.
+Randevu akışında poliklinik, doktor ve saat seçimi yapılır, ardından onay ve SMS gönderilir.
+Tahlil akışında sonuç kontrol edilir; hazırsa gösterilir, değilse bekleme mesajı verilir.
+İşlem tamamlandıktan sonra kullanıcı başka işlem yapmak isteyip istemediğini seçebilir.
