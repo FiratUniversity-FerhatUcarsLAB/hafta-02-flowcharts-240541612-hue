@@ -1,0 +1,50 @@
+Başla
+
+// Sistem durumunu kontrol et
+Eğer Sistem_Aktif_mi() = Hayır ise
+    Programı bitir
+Son
+
+// Sürekli sensör okuma döngüsü
+Döngü (Sürekli)
+    
+    // Sensör verilerini oku
+    Hareket_Durumu = Hareket_Sensor_Oku()
+    Kapi_Pencere_Durumu = Kapi_Pencere_Sensor_Oku()
+    
+    // Hareket sensörü kontrolü
+    Eğer Hareket_Durumu = Algılandı ise
+        Kamera_Aktive_Et()
+        Alarm_Durumu = Kontrol_Yanlis_Alarm()
+        
+        Eğer Alarm_Durumu = Ev_Sahibi_Yok ise
+            // Alarm seviyesini belirle
+            Alarm_Seviyesi = Alarm_Seviyesi_Belirle(Hareket_Durumu, Kapi_Pencere_Durumu)
+            
+            // Bildirim gönder
+            Bildirim_Gonder(SMS, App, Email, Alarm_Seviyesi)
+        Son
+    Son
+    
+    // Kapı/Pencere sensörü kontrolü
+    Eğer Kapi_Pencere_Durumu = Açık ise
+        Kamera_Aktive_Et()
+        Alarm_Durumu = Kontrol_Yanlis_Alarm()
+        
+        Eğer Alarm_Durumu = Ev_Sahibi_Yok ise
+            Alarm_Seviyesi = Alarm_Seviyesi_Belirle(Hareket_Durumu, Kapi_Pencere_Durumu)
+            Bildirim_Gonder(SMS, App, Email, Alarm_Seviyesi)
+        Son
+    Son
+    
+    // Bekle ve tekrar kontrol et
+    Bekle(1 saniye)
+    
+    // Alarm sıfırlama veya devam ettirme kontrolü
+    Eğer Kullanici_Alarm_Sifirla() = Evet ise
+        Alarmı_Sifirla()
+    Son
+    
+Son Döngü
+
+Bitir
