@@ -1,178 +1,135 @@
-Universite Ders Kayıt Sistemi için pseudocode  yaz O˘grenci giri¸si (¨o˘grenci no + ¸sifre) ¨ 
-Ders listesini g¨or¨unt¨uleme (d¨ong¨u) 
-Her ders i¸cin: 
-Kontenjan kontrol¨u (ko¸sul) 
-On ko¸sul dersi kontrol¨u (ko¸sul) ¨ 
-Zaman ¸cakı¸sması kontrol¨u (ko¸sul) 
-Kredi limiti kontrol¨u (toplam ≤ 35) (ko¸sul) 
-Ders ekleme/¸cıkarma (d¨ong¨u) 
-Danı¸sman onayı gerekli mi? (GPA ¡ 2.5 ise) (ko¸sul) 
-Kayıt ¨ozeti g¨osterme ve kayıt onaylama 
+Akıllı Ev G¨uvenlik Sistemi için pseudocode yaz.Sistem aktif mi kontrol¨u (ko¸sul) 
+Sens¨or okuma d¨ong¨us¨u (d¨ong¨u - s¨urekli) 
+Hareket sens¨or¨u kontrol¨u (ko¸sul) 
+Kapı/pencere sens¨or¨u kontrol¨u (ko¸sul) 
+Kamera aktivasyonu (ko¸sul) 
+Yanlı¸s alarm kontrol¨u (ev sahibi evde mi?) (ko¸sul) 
+Alarm seviyesi belirleme (1-d¨u¸s¨uk, 2-orta, 3-y¨uksek) (ko¸sul) 
+Bildirim g¨onderme (SMS + App + Email) 
+Bekle ve tekrar kontrol et (d¨ong¨u) 
+Alarm sıfırlama veya devam ettirme (ko¸sul)
 ChatGPT said:
 
-Tabii! İşte verdiğiniz gereksinimlere uygun, Üniversite Ders Kayıt Sistemi için detaylı bir pseudocode:
+Tabii! İşte Akıllı Ev Güvenlik Sistemi için verdiğiniz adımları temel alan detaylı bir pseudocode örneği:
 
 Başla
 
-// 1. Öğrenci girişi
-ÖğrenciNo, Sifre ← Kullanıcıdan al
-Eğer GirişDoğru(ÖğrenciNo, Sifre) ise
-    Giriş Başarılı
-    ToplamKredi ← 0
-    KayıtlıDersler ← Boş Liste
+// Sistem durumunu kontrol et
+Eğer Sistem_Aktif_mi() = Hayır ise
+    Programı bitir
+Son
 
-    Döngü: Ders işlemleri
-        DersListesi ← Tüm dersleri getir
-        Her Ders için dersListesi
-            DersAdı, Kontenjan, ÖnKoşul, DersSaatleri, Kredi ← ders bilgisi
-
-            // Kontenjan kontrolü
-            Eğer Kontenjan > 0 ise
-                // Ön koşul kontrolü
-                Eğer ÖnKoşulTamamlandı(ÖğrenciNo, ÖnKoşul) ise
-                    // Zaman çakışması kontrolü
-                    Eğer ZamanUygun(DersSaatleri, KayıtlıDersler) ise
-                        // Kredi limiti kontrolü
-                        Eğer (ToplamKredi + Kredi) ≤ 35 ise
-                            Ders ekleme/çıkarma işlemi sor
-                            Eğer Öğrenci seçerse DersEkle(DersAdı)
-                                ToplamKredi += Kredi
-                                Kontenjan -= 1
-                                KayıtlıDersler ← DersAdı
-                            Yoksa DersÇıkar(DersAdı)
-                                ToplamKredi -= Kredi
-                                Kontenjan += 1
-                                KayıtlıDersler ← DersAdı'dan sil
-                        Yoksa
-                            "Kredi limiti aşılıyor!" mesajı göster
-                    Yoksa
-                        "Ders zaman çakışması var!" mesajı göster
-                Yoksa
-                    "Ön koşul dersi tamamlanmamış!" mesajı göster
-            Yoksa
-                "Kontenjan dolu!" mesajı göster
-        Döngü sonu
-
-        // Danışman onayı kontrolü
-        GPA ← ÖğrenciGPA(ÖğrenciNo)
-        Eğer GPA < 2.5 ise
-            DanışmanOnayıGerekli ← Doğru
-        Yoksa
-            DanışmanOnayıGerekli ← Yanlış
-
-        // Kayıt özeti
-        KayıtÖzetiGoster(KayıtlıDersler, ToplamKredi)
-        KayıtOnayıSor()
-        Eğer Onaylandı ise
-            "Kayıt tamamlandı" mesajı göster
-        Yoksa
-            Döngüye dön
-    Döngü sonu
-
-Aksi halde
-    "Giriş başarısız" mesajı göster
+// Sürekli sensör okuma döngüsü
+Döngü (Sürekli)
+    
+    // Sensör verilerini oku
+    Hareket_Durumu = Hareket_Sensor_Oku()
+    Kapi_Pencere_Durumu = Kapi_Pencere_Sensor_Oku()
+    
+    // Hareket sensörü kontrolü
+    Eğer Hareket_Durumu = Algılandı ise
+        Kamera_Aktive_Et()
+        Alarm_Durumu = Kontrol_Yanlis_Alarm()
+        
+        Eğer Alarm_Durumu = Ev_Sahibi_Yok ise
+            // Alarm seviyesini belirle
+            Alarm_Seviyesi = Alarm_Seviyesi_Belirle(Hareket_Durumu, Kapi_Pencere_Durumu)
+            
+            // Bildirim gönder
+            Bildirim_Gonder(SMS, App, Email, Alarm_Seviyesi)
+        Son
+    Son
+    
+    // Kapı/Pencere sensörü kontrolü
+    Eğer Kapi_Pencere_Durumu = Açık ise
+        Kamera_Aktive_Et()
+        Alarm_Durumu = Kontrol_Yanlis_Alarm()
+        
+        Eğer Alarm_Durumu = Ev_Sahibi_Yok ise
+            Alarm_Seviyesi = Alarm_Seviyesi_Belirle(Hareket_Durumu, Kapi_Pencere_Durumu)
+            Bildirim_Gonder(SMS, App, Email, Alarm_Seviyesi)
+        Son
+    Son
+    
+    // Bekle ve tekrar kontrol et
+    Bekle(1 saniye)
+    
+    // Alarm sıfırlama veya devam ettirme kontrolü
+    Eğer Kullanici_Alarm_Sifirla() = Evet ise
+        Alarmı_Sifirla()
+    Son
+    
+Son Döngü
 
 Bitir
 
+Açıklama (5-6 Satır)
 
-Bu pseudocode şunları kapsar:
+Bu pseudocode, akıllı ev güvenlik sisteminin temel işleyişini gösterir. Öncelikle sistemin aktif olup olmadığı kontrol edilir. Sürekli bir döngü ile hareket ve kapı/pencere sensörlerinden veri okunur. Şüpheli durum algılanırsa kamera aktif edilir, alarm seviyesi belirlenir ve ilgili bildirimler gönderilir. Ev sahibi mevcutsa yanlış alarm durumu kontrol edilir. Kullanıcı isteğe bağlı olarak alarmı sıfırlayabilir veya devam ettirebilir.
 
-Öğrenci giriş doğrulaması.
-
-Ders listesini görüntüleme ve her ders için: kontenjan, ön koşul, zaman çakışması ve kredi limiti kontrolleri.
-
-Ders ekleme ve çıkarma işlemleri.
-
-GPA’ya göre danışman onayı gerekliliği.
-
-Kayıt özeti ve onay mekanizması.
-
-İstersen, ben bunu Graphviz DOT diyagramına çevirip görsel akış diyagramı şeklinde de hazırlayabilirim. Bunu yapmamı ister misin?
+İstersen bunu ben Graphviz DOT formatına da çevirebilirim, böylece görsel bir akış diyagramı elde edersin. Bunu yapmamı ister misin?
 
 You said:
 bu kodu dot graphiz koduna çevir 
 ChatGPT said:
 
-Tabii! Aşağıda verdiğimiz Üniversite Ders Kayıt Sistemi pseudocode’unu temel alarak hazırlanmış Graphviz DOT kodu var. Bu akış diyagramını görselleştirebilirsiniz:
+Tabii! Verdiğiniz Akıllı Ev Güvenlik Sistemi pseudocode’unu Graphviz DOT formatına çevirdim. Bu, sistemin akışını görsel bir diyagram olarak gösterecek:
 
-digraph DersKayit {
+digraph AkilliEvGuvenlik {
     rankdir=TB;
-    node [shape=box, style=rounded];
+    node [shape=box, style=rounded, fontname="Arial"];
 
-    Basla [label="Başla"];
-    GirisKontrol [label="Öğrenci No ve Şifre ile giriş"];
-    GirisBasarili [label="Giriş Başarılı"];
-    GirisBasarisiz [label="Giriş Başarısız"];
-    DersListele [label="Ders listesini görüntüle (döngü)"];
-    KontenjanKontrol [label="Kontenjan kontrolü"];
-    OnKosulKontrol [label="Ön koşul dersi kontrolü"];
-    ZamanKontrol [label="Zaman çakışması kontrolü"];
-    KrediKontrol [label="Kredi limiti kontrolü (≤35)"];
-    DersIslem [label="Ders ekleme/çıkarma"];
-    DanismanKontrol [label="GPA < 2.5? Danışman onayı gerekli"];
-    KayitOzeti [label="Kayıt özeti göster ve onayla"];
-    KayitTamam [label="Kayıt tamamlandı"];
-    KayitDondur [label="Döngüye dön"];
-
-    Basla -> GirisKontrol;
-    GirisKontrol -> GirisBasarili [label="Doğru"];
-    GirisKontrol -> GirisBasarisiz [label="Yanlış"];
-
-    GirisBasarili -> DersListele;
-
-    DersListele -> KontenjanKontrol;
-    KontenjanKontrol -> OnKosulKontrol [label="Kontenjan var"];
-    KontenjanKontrol -> DersDolu [label="Kontenjan dolu"];
-    DersDolu [shape=diamond, label="Kontenjan dolu!"] -> DersListele;
-
-    OnKosulKontrol -> ZamanKontrol [label="Ön koşul tamam"];
-    OnKosulKontrol -> OnKosulYok [label="Ön koşul eksik"];
-    OnKosulYok [shape=diamond, label="Ön koşul tamamlanmamış!"] -> DersListele;
-
-    ZamanKontrol -> KrediKontrol [label="Zaman uygun"];
-    ZamanKontrol -> ZamanCarpisma [label="Çakışma var"];
-    ZamanCarpisma [shape=diamond, label="Ders zaman çakışması!"] -> DersListele;
-
-    KrediKontrol -> DersIslem [label="Kredi uygun"];
-    KrediKontrol -> KrediAsimi [label="Kredi aşıyor"];
-    KrediAsimi [shape=diamond, label="Kredi limiti aşılıyor!"] -> DersListele;
-
-    DersIslem -> DanismanKontrol;
-
-    DanismanKontrol -> KayitOzeti [label="GPA ≥ 2.5"];
-    DanismanKontrol -> DanismanOnay [label="GPA < 2.5"];
-    DanismanOnay [shape=diamond, label="Danışman onayı alınmalı"] -> KayitOzeti;
-
-    KayitOzeti -> KayitTamam [label="Onaylandı"];
-    KayitOzeti -> KayitDondur [label="Onaylanmadı"];
-    KayitDondur -> DersListele;
-
-    GirisBasarisiz -> Bitir [label=""];
-    KayitTamam -> Bitir;
+    Start [label="Başla"];
+    SistemKontrol [label="Sistem aktif mi?"];
+    Bitir [label="Programı bitir"];
+    SensorDongusu [label="Sensör okuma döngüsü"];
+    HareketOku [label="Hareket sensörü oku"];
+    KapiPencereOku [label="Kapı/Pencere sensörü oku"];
+    HareketKontrol [label="Hareket algılandı mı?"];
+    KapiPencereKontrol [label="Kapı/Pencere açık mı?"];
+    KameraAktive [label="Kamerayı aktifleştir"];
+    YanlisAlarmKontrol [label="Yanlış alarm kontrolü"];
+    AlarmSeviyesiBelirle [label="Alarm seviyesi belirle"];
+    BildirimGonder [label="Bildirim gönder (SMS, App, Email)"];
+    Bekle [label="Bekle ve tekrar kontrol et"];
+    AlarmSifirlaKontrol [label="Alarm sıfırlama isteği?"];
+    AlarmSifirla [label="Alarmı sıfırla"];
     
-    Bitir [shape=oval, label="Bitir"];
+    // Akış bağlantıları
+    Start -> SistemKontrol;
+    SistemKontrol -> SensorDongusu [label="Evet"];
+    SistemKontrol -> Bitir [label="Hayır"];
+    
+    SensorDongusu -> HareketOku;
+    HareketOku -> KapiPencereOku;
+    
+    KapiPencereOku -> HareketKontrol;
+    HareketKontrol -> KameraAktive [label="Evet"];
+    HareketKontrol -> KapiPencereKontrol [label="Hayır"];
+    
+    KameraAktive -> YanlisAlarmKontrol;
+    YanlisAlarmKontrol -> AlarmSeviyesiBelirle [label="Ev sahibi yok"];
+    YanlisAlarmKontrol -> Bekle [label="Ev sahibi var"];
+    
+    AlarmSeviyesiBelirle -> BildirimGonder;
+    BildirimGonder -> Bekle;
+    
+    KapiPencereKontrol -> KameraAktive [label="Evet"];
+    KapiPencereKontrol -> Bekle [label="Hayır"];
+    
+    Bekle -> AlarmSifirlaKontrol;
+    AlarmSifirlaKontrol -> AlarmSifirla [label="Evet"];
+    AlarmSifirlaKontrol -> SensorDongusu [label="Hayır"];
+    AlarmSifirla -> SensorDongusu;
 }
 
 
-Bu DOT kodu:
+Bu DOT kodunu bir Graphviz aracıyla çalıştırırsan, akıllı ev güvenlik sistemi akış diyagramı ortaya çıkar.
 
-Başlangıç ve bitiş noktaları
-
-Karar noktaları (kontenjan, ön koşul, zaman çakışması, kredi limiti, GPA)
-
-Ders ekleme/çıkarma döngüsü
-
-Kayıt özeti ve onay mekanizmasını
-
-görsel olarak akış diyagramı şeklinde gösterir.
-
-İstersen, ben bunu senin için tam görselleştirilmiş akış diyagramı PNG veya SVG olarak da oluşturabilirim. Bunu yapayım mı?
+İstersen ben sana bunu renkli ve daha görsel bir versiyona da çevirebilirim; örneğin alarm durumları kırmızı, bekleme adımı mavi gibi. Bunu yapmamı ister misin?
 
 You said:
 bunun için kisa açiklama yaz 5-6 satırdan
 ChatGPT said:
 
-Bu üniversite ders kayıt sistemi akış diyagramı, öğrencinin sisteme girişinden başlayarak ders seçim sürecini adım adım gösterir. 
-Önce kontenjan, ön koşul ve zaman çakışması kontrolleri yapılır, ardından kredi limiti kontrol edilir. 
-Öğrenci ders ekleyip çıkarabilir ve GPA’sı düşükse danışman onayı gerekir. Son olarak, kayıt özeti gösterilir ve öğrenci onaylarsa kayıt tamamlanır.
-Tüm işlemler döngüsel olarak kontrol edilerek hatalı durumlarda kullanıcı bilgilendirilir.
+Bu Graphviz diyagramı, akıllı ev güvenlik sisteminin temel işleyişini görselleştirir. Önce sistemin aktif olup olmadığı kontrol edilir; aktif değilse program sonlanır. Sistem aktifse sensörlerden sürekli veri okunur ve hareket veya kapı/pencere durumu kontrol edilir. Şüpheli bir durum algılanırsa kamera aktifleştirilir, yanlış alarm kontrolü yapılır ve alarm seviyesi belirlenir. Ardından SMS, uygulama ve e-posta bildirimleri gönderilir. Kullanıcı isterse alarm sıfırlanabilir; döngü bu şekilde sürekli tekrar eder.
