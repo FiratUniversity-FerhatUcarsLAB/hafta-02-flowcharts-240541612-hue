@@ -1,0 +1,165 @@
+Online Alı¸sveri¸s Sepet Sistemi  için pseudocode yaz. Kullanıcı giri¸s kontrol¨u (ko¸sul) 
+Ur¨un kategorileri arasında gezinme (d¨ong¨u) ¨ 
+Ur¨un sepete ekleme ¨ 
+Stok kontrol¨u (ko¸sul) 
+Sepeti g¨or¨unt¨uleme ve d¨uzenleme (d¨ong¨u) 
+˙ 
+Indirim kodu uygulanabilir (ko¸sul) 
+Minimum 50 TL kontrol¨u (ko¸sul) 
+Kargo ¨ucreti hesaplama (ko¸sul: ¿200 TL ¨ucretsiz) 
+Odeme y¨ontemi se¸cimi (ko¸sul) ¨ 
+Sipari¸s onayı  
+BAŞLA
+
+KULLANICI_GIRIS:
+    KULLANICI_ADI ve SIFRE gir
+    EĞER bilgiler doğruysa
+        GİRİŞ BAŞARILI
+    DEĞİLSE
+        HATA mesajı göster
+        TEKRAR DENE
+    SON
+
+ÜRÜN_GEZİNME:
+    KATEGORİLERİ listele
+    DÖNGÜ: Kullanıcı çıkış yapana kadar
+        SEÇİLEN kategoride ürünleri göster
+        Kullanıcı ürün seçerse
+            SEPETE_EKLE:
+                EĞER ürün stokta varsa
+                    Ürünü sepete ekle
+                DEĞİLSE
+                    "Stokta yok" mesajı göster
+                SON
+        SEPET_GÖRÜNTÜLE:
+            DÖNGÜ: Kullanıcı sepeti düzenlemek isteyene kadar
+                Ürünleri ve toplam fiyatı göster
+                Ekle / Sil işlemleri yapılabilir
+            SON
+    SON_DÖNGÜ
+
+İNDİRİM_KODU:
+    Kullanıcı indirim kodu girerse
+        EĞER kod geçerliyse indirimi uygula
+        DEĞİLSE "Geçersiz kod" mesajı göster
+    SON
+
+MIN_TUTAR_KONTROL:
+    EĞER toplam_tutar < 50 TL
+        "Minimum 50 TL alışveriş yapmalısınız" mesajı göster
+        Ürün eklemeye yönlendir
+    SON
+
+KARGO_HESAPLA:
+    EĞER toplam_tutar >= 200 TL
+        KARGO = ÜCRETSİZ
+    DEĞİLSE
+        KARGO = 30 TL
+    SON
+
+ÖDEME:
+    Ödeme yöntemi seç (Kredi Kartı / Kapıda Ödeme)
+    EĞER yöntem geçerliyse devam et
+    DEĞİLSE tekrar seçim iste
+    SON
+
+SİPARİŞ_ONAY:
+    Sipariş özetini göster
+    Onay al
+    "Siparişiniz alınmıştır" mesajı göster
+
+BİTİR
+
+İstersen bu pseudocode’u bir dot (Graphviz) akış diyagramına dönüştürebilirim veya kısa bir açıklama paragrafı da ekleyebilirim.
+Hangisini istersin?
+
+You said:
+bu kodu dot graphiz koduna çevir 
+ChatGPT said:
+
+İşte yukarıdaki Online Alışveriş Sepet Sistemi için DOT (Graphviz) kodu:
+digraph OnlineAlisverisSepeti {
+    rankdir=TB;
+    node [shape=box, style=rounded, fontname="Arial"];
+
+    Start [label="BAŞLA"];
+    Giris [label="Kullanıcı girişi (Kullanıcı adı + Şifre)"];
+    GirisKontrol [label="Bilgiler doğru mu?", shape=diamond];
+    GirisBasarili [label="Giriş başarılı"];
+    GirisHatali [label="Hatalı giriş - Tekrar dene"];
+
+    UrunGezinme [label="Ürün kategorilerini listele"];
+    UrunSec [label="Ürün seçimi"];
+    StokKontrol [label="Ürün stokta var mı?", shape=diamond];
+    SepeteEkle [label="Ürünü sepete ekle"];
+    StokYok [label="Stokta yok mesajı"];
+
+    SepetGoruntule [label="Sepeti görüntüle ve düzenle"];
+    IndirimKodu [label="İndirim kodu girildi mi?", shape=diamond];
+    KodGecerli [label="İndirim uygulandı"];
+    KodGecersiz [label="Geçersiz kod"];
+
+    MinTutar [label="Toplam < 50 TL mi?", shape=diamond];
+    MinUyari [label="Minimum 50 TL alışveriş uyarısı"];
+
+    Kargo [label="Kargo ücreti hesapla"];
+    KargoKontrol [label="Toplam ≥ 200 TL mi?", shape=diamond];
+    KargoUcretsiz [label="Kargo: Ücretsiz"];
+    KargoUcretli [label="Kargo: 30 TL"];
+
+    OdemeSecim [label="Ödeme yöntemi seç (Kart / Kapıda)"];
+    OdemeKontrol [label="Yöntem geçerli mi?", shape=diamond];
+    OdemeTekrar [label="Tekrar seçim iste"];
+    SiparisOnay [label="Sipariş onayı al"];
+    Bitir [label="SİPARİŞ TAMAMLANDI", shape=oval, color=green];
+
+    Start -> Giris -> GirisKontrol;
+    GirisKontrol -> GirisBasarili [label="Evet"];
+    GirisKontrol -> GirisHatali [label="Hayır"];
+    GirisHatali -> Giris;
+
+    GirisBasarili -> UrunGezinme -> UrunSec -> StokKontrol;
+    StokKontrol -> SepeteEkle [label="Evet"];
+    StokKontrol -> StokYok [label="Hayır"];
+    SepeteEkle -> SepetGoruntule;
+    StokYok -> UrunSec;
+
+    SepetGoruntule -> IndirimKodu;
+    IndirimKodu -> KodGecerli [label="Evet"];
+    IndirimKodu -> KodGecersiz [label="Hayır"];
+    KodGecerli -> MinTutar;
+    KodGecersiz -> MinTutar;
+
+    MinTutar -> MinUyari [label="Evet"];
+    MinUyari -> UrunSec;
+    MinTutar -> Kargo [label="Hayır"];
+
+    Kargo -> KargoKontrol;
+    KargoKontrol -> KargoUcretsiz [label="Evet"];
+    KargoKontrol -> KargoUcretli [label="Hayır"];
+
+    KargoUcretsiz -> OdemeSecim;
+    KargoUcretli -> OdemeSecim;
+
+    OdemeSecim -> OdemeKontrol;
+    OdemeKontrol -> SiparisOnay [label="Evet"];
+    OdemeKontrol -> OdemeTekrar [label="Hayır"];
+    OdemeTekrar -> OdemeSecim;
+
+    SiparisOnay -> Bitir;
+}
+
+İstersen bu diyagramı görselleştirmek için sana uygun bir Graphviz Online Editor (örneğin: dreampuf.github.io/GraphvizOnline
+) bağlantısını da verebilirim.
+İster misin diyagramı orada görüntüleyebileceğin şekilde hazırlayayım?
+
+You said:
+bunun için kisa açiklama yaz 5-6 satırdan
+ChatGPT said:
+
+Bu diyagram, bir Online Alışveriş Sepet Sisteminin temel işleyiş adımlarını göstermektedir.
+Kullanıcı giriş yaptıktan sonra ürün kategorileri arasında gezinir ve istediği ürünleri sepete ekler.
+Sistem stok durumunu kontrol eder ve uygun olmayan ürünler için uyarı verir.
+Sepet görüntülendikten sonra kullanıcı indirim kodu uygulayabilir ve minimum tutar kontrolü yapılır.
+Kargo ücreti, toplam tutara göre otomatik hesaplanır (200 TL ve üzeri ücretsiz).
+Son olarak kullanıcı ödeme yöntemini seçer ve sipariş onayıyla işlem tamamlanır.
