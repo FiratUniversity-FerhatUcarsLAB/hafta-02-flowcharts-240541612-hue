@@ -1,0 +1,47 @@
+digraph AkilliEvGuvenlik {
+    rankdir=TB;
+    node [shape=box, style=rounded, fontname="Arial"];
+
+    Start [label="Başla"];
+    SistemKontrol [label="Sistem aktif mi?"];
+    Bitir [label="Programı bitir"];
+    SensorDongusu [label="Sensör okuma döngüsü"];
+    HareketOku [label="Hareket sensörü oku"];
+    KapiPencereOku [label="Kapı/Pencere sensörü oku"];
+    HareketKontrol [label="Hareket algılandı mı?"];
+    KapiPencereKontrol [label="Kapı/Pencere açık mı?"];
+    KameraAktive [label="Kamerayı aktifleştir"];
+    YanlisAlarmKontrol [label="Yanlış alarm kontrolü"];
+    AlarmSeviyesiBelirle [label="Alarm seviyesi belirle"];
+    BildirimGonder [label="Bildirim gönder (SMS, App, Email)"];
+    Bekle [label="Bekle ve tekrar kontrol et"];
+    AlarmSifirlaKontrol [label="Alarm sıfırlama isteği?"];
+    AlarmSifirla [label="Alarmı sıfırla"];
+    
+    // Akış bağlantıları
+    Start -> SistemKontrol;
+    SistemKontrol -> SensorDongusu [label="Evet"];
+    SistemKontrol -> Bitir [label="Hayır"];
+    
+    SensorDongusu -> HareketOku;
+    HareketOku -> KapiPencereOku;
+    
+    KapiPencereOku -> HareketKontrol;
+    HareketKontrol -> KameraAktive [label="Evet"];
+    HareketKontrol -> KapiPencereKontrol [label="Hayır"];
+    
+    KameraAktive -> YanlisAlarmKontrol;
+    YanlisAlarmKontrol -> AlarmSeviyesiBelirle [label="Ev sahibi yok"];
+    YanlisAlarmKontrol -> Bekle [label="Ev sahibi var"];
+    
+    AlarmSeviyesiBelirle -> BildirimGonder;
+    BildirimGonder -> Bekle;
+    
+    KapiPencereKontrol -> KameraAktive [label="Evet"];
+    KapiPencereKontrol -> Bekle [label="Hayır"];
+    
+    Bekle -> AlarmSifirlaKontrol;
+    AlarmSifirlaKontrol -> AlarmSifirla [label="Evet"];
+    AlarmSifirlaKontrol -> SensorDongusu [label="Hayır"];
+    AlarmSifirla -> SensorDongusu;
+}
