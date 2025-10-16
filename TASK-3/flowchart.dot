@@ -1,0 +1,52 @@
+digraph HastaneRandevuTahlil {
+    rankdir=TB;
+    node [shape=rectangle, style=rounded, fontsize=12];
+
+    Start [label="BAŞLA"];
+    TC [label="TC Kimlik Numarası Gir"];
+    CheckTC [label="TC geçerli mi?", shape=diamond];
+    InvalidTC [label="Geçersiz TC!\nYeniden dene"];
+    Menu [label="İşlem Seç: \n1-Randevu Al \n2-Tahlil Sonucu Gör"];
+    Choice [label="Seçim?", shape=diamond];
+
+    Poliklinik [label="Poliklinik Seç"];
+    DoktorList [label="Doktor Listesini Göster"];
+    SaatList [label="Uygun Saatleri Göster"];
+    RandevuOnay [label="Randevu Onayı ve SMS Gönderimi"];
+
+    TahlilKontrol [label="Tahlil Var mı?", shape=diamond];
+    NoTahlil [label="Tahlil Kaydı Yok"];
+    SonucHazir [label="Sonuç Hazır mı?", shape=diamond];
+    SonucGor [label="Tahlil Sonucunu Göster"];
+    Bekle [label="Sonuç Henüz Hazır Değil"];
+    PDF [label="PDF İndir Seçeneği"];
+
+    Again [label="Başka işlem yapmak ister misiniz?", shape=diamond];
+    End [label="BİTİR"];
+
+    Start -> TC -> CheckTC;
+    CheckTC -> InvalidTC [label="Hayır"];
+    InvalidTC -> TC;
+    CheckTC -> Menu [label="Evet"];
+
+    Menu -> Choice;
+
+    Choice -> Poliklinik [label="1"];
+    Poliklinik -> DoktorList -> SaatList -> RandevuOnay -> Again;
+
+    Choice -> TahlilKontrol [label="2"];
+    TahlilKontrol -> NoTahlil [label="Hayır"];
+    NoTahlil -> Again;
+
+    TahlilKontrol -> SonucHazir [label="Evet"];
+    SonucHazir -> SonucGor [label="Evet"];
+    SonucGor -> PDF -> Again;
+    SonucHazir -> Bekle [label="Hayır"];
+    Bekle -> Again;
+
+    Again -> TC [label="Evet"];
+    Again -> End [label="Hayır"];
+
+    // Estetik düzen
+    {rank=same; Poliklinik; DoktorList; SaatList;}
+}
