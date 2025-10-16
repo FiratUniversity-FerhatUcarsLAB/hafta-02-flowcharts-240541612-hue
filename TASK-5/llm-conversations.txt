@@ -1,0 +1,135 @@
+Akıllı Ev G¨uvenlik Sistemi için pseudocode yaz.Sistem aktif mi kontrol¨u (ko¸sul) 
+Sens¨or okuma d¨ong¨us¨u (d¨ong¨u - s¨urekli) 
+Hareket sens¨or¨u kontrol¨u (ko¸sul) 
+Kapı/pencere sens¨or¨u kontrol¨u (ko¸sul) 
+Kamera aktivasyonu (ko¸sul) 
+Yanlı¸s alarm kontrol¨u (ev sahibi evde mi?) (ko¸sul) 
+Alarm seviyesi belirleme (1-d¨u¸s¨uk, 2-orta, 3-y¨uksek) (ko¸sul) 
+Bildirim g¨onderme (SMS + App + Email) 
+Bekle ve tekrar kontrol et (d¨ong¨u) 
+Alarm sıfırlama veya devam ettirme (ko¸sul)
+ChatGPT said:
+
+Tabii! İşte Akıllı Ev Güvenlik Sistemi için verdiğiniz adımları temel alan detaylı bir pseudocode örneği:
+
+Başla
+
+// Sistem durumunu kontrol et
+Eğer Sistem_Aktif_mi() = Hayır ise
+    Programı bitir
+Son
+
+// Sürekli sensör okuma döngüsü
+Döngü (Sürekli)
+    
+    // Sensör verilerini oku
+    Hareket_Durumu = Hareket_Sensor_Oku()
+    Kapi_Pencere_Durumu = Kapi_Pencere_Sensor_Oku()
+    
+    // Hareket sensörü kontrolü
+    Eğer Hareket_Durumu = Algılandı ise
+        Kamera_Aktive_Et()
+        Alarm_Durumu = Kontrol_Yanlis_Alarm()
+        
+        Eğer Alarm_Durumu = Ev_Sahibi_Yok ise
+            // Alarm seviyesini belirle
+            Alarm_Seviyesi = Alarm_Seviyesi_Belirle(Hareket_Durumu, Kapi_Pencere_Durumu)
+            
+            // Bildirim gönder
+            Bildirim_Gonder(SMS, App, Email, Alarm_Seviyesi)
+        Son
+    Son
+    
+    // Kapı/Pencere sensörü kontrolü
+    Eğer Kapi_Pencere_Durumu = Açık ise
+        Kamera_Aktive_Et()
+        Alarm_Durumu = Kontrol_Yanlis_Alarm()
+        
+        Eğer Alarm_Durumu = Ev_Sahibi_Yok ise
+            Alarm_Seviyesi = Alarm_Seviyesi_Belirle(Hareket_Durumu, Kapi_Pencere_Durumu)
+            Bildirim_Gonder(SMS, App, Email, Alarm_Seviyesi)
+        Son
+    Son
+    
+    // Bekle ve tekrar kontrol et
+    Bekle(1 saniye)
+    
+    // Alarm sıfırlama veya devam ettirme kontrolü
+    Eğer Kullanici_Alarm_Sifirla() = Evet ise
+        Alarmı_Sifirla()
+    Son
+    
+Son Döngü
+
+Bitir
+
+Açıklama (5-6 Satır)
+
+Bu pseudocode, akıllı ev güvenlik sisteminin temel işleyişini gösterir. Öncelikle sistemin aktif olup olmadığı kontrol edilir. Sürekli bir döngü ile hareket ve kapı/pencere sensörlerinden veri okunur. Şüpheli durum algılanırsa kamera aktif edilir, alarm seviyesi belirlenir ve ilgili bildirimler gönderilir. Ev sahibi mevcutsa yanlış alarm durumu kontrol edilir. Kullanıcı isteğe bağlı olarak alarmı sıfırlayabilir veya devam ettirebilir.
+
+İstersen bunu ben Graphviz DOT formatına da çevirebilirim, böylece görsel bir akış diyagramı elde edersin. Bunu yapmamı ister misin?
+
+You said:
+bu kodu dot graphiz koduna çevir 
+ChatGPT said:
+
+Tabii! Verdiğiniz Akıllı Ev Güvenlik Sistemi pseudocode’unu Graphviz DOT formatına çevirdim. Bu, sistemin akışını görsel bir diyagram olarak gösterecek:
+
+digraph AkilliEvGuvenlik {
+    rankdir=TB;
+    node [shape=box, style=rounded, fontname="Arial"];
+
+    Start [label="Başla"];
+    SistemKontrol [label="Sistem aktif mi?"];
+    Bitir [label="Programı bitir"];
+    SensorDongusu [label="Sensör okuma döngüsü"];
+    HareketOku [label="Hareket sensörü oku"];
+    KapiPencereOku [label="Kapı/Pencere sensörü oku"];
+    HareketKontrol [label="Hareket algılandı mı?"];
+    KapiPencereKontrol [label="Kapı/Pencere açık mı?"];
+    KameraAktive [label="Kamerayı aktifleştir"];
+    YanlisAlarmKontrol [label="Yanlış alarm kontrolü"];
+    AlarmSeviyesiBelirle [label="Alarm seviyesi belirle"];
+    BildirimGonder [label="Bildirim gönder (SMS, App, Email)"];
+    Bekle [label="Bekle ve tekrar kontrol et"];
+    AlarmSifirlaKontrol [label="Alarm sıfırlama isteği?"];
+    AlarmSifirla [label="Alarmı sıfırla"];
+    
+    // Akış bağlantıları
+    Start -> SistemKontrol;
+    SistemKontrol -> SensorDongusu [label="Evet"];
+    SistemKontrol -> Bitir [label="Hayır"];
+    
+    SensorDongusu -> HareketOku;
+    HareketOku -> KapiPencereOku;
+    
+    KapiPencereOku -> HareketKontrol;
+    HareketKontrol -> KameraAktive [label="Evet"];
+    HareketKontrol -> KapiPencereKontrol [label="Hayır"];
+    
+    KameraAktive -> YanlisAlarmKontrol;
+    YanlisAlarmKontrol -> AlarmSeviyesiBelirle [label="Ev sahibi yok"];
+    YanlisAlarmKontrol -> Bekle [label="Ev sahibi var"];
+    
+    AlarmSeviyesiBelirle -> BildirimGonder;
+    BildirimGonder -> Bekle;
+    
+    KapiPencereKontrol -> KameraAktive [label="Evet"];
+    KapiPencereKontrol -> Bekle [label="Hayır"];
+    
+    Bekle -> AlarmSifirlaKontrol;
+    AlarmSifirlaKontrol -> AlarmSifirla [label="Evet"];
+    AlarmSifirlaKontrol -> SensorDongusu [label="Hayır"];
+    AlarmSifirla -> SensorDongusu;
+}
+
+
+Bu DOT kodunu bir Graphviz aracıyla çalıştırırsan, akıllı ev güvenlik sistemi akış diyagramı ortaya çıkar.
+
+İstersen ben sana bunu renkli ve daha görsel bir versiyona da çevirebilirim; örneğin alarm durumları kırmızı, bekleme adımı mavi gibi. Bunu yapmamı ister misin?
+
+You said:
+bunun için kisa açiklama yaz 5-6 satırdan
+ChatGPT said:
+
+Bu Graphviz diyagramı, akıllı ev güvenlik sisteminin temel işleyişini görselleştirir. Önce sistemin aktif olup olmadığı kontrol edilir; aktif değilse program sonlanır. Sistem aktifse sensörlerden sürekli veri okunur ve hareket veya kapı/pencere durumu kontrol edilir. Şüpheli bir durum algılanırsa kamera aktifleştirilir, yanlış alarm kontrolü yapılır ve alarm seviyesi belirlenir. Ardından SMS, uygulama ve e-posta bildirimleri gönderilir. Kullanıcı isterse alarm sıfırlanabilir; döngü bu şekilde sürekli tekrar eder.
