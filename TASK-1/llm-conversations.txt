@@ -1,0 +1,252 @@
+ATM Para C¸ekme Sistemi için pseudocode yaz.Kart takılır ve PIN sorulur 
+3 hatalı PIN giri¸sinden sonra kart bloke olur (d¨ong¨u) 
+Bakiye sorgulanır 
+C¸ekilmek istenen tutar girilir 
+Yetersiz bakiye kontrol¨u yapılır (ko¸sul) 
+20 TL’nin katları olmalı (ko¸sul) 
+G¨unl¨uk limit kontrol¨u (ko¸sul) 
+Para verilir ve fi¸s ¸cıkar 
+Ba¸ska i¸slem yapmak ister misiniz? (d¨ong¨u)
+ChatGPT said:
+ATM Para Çekme Sistemi — Pseudocode
+// Değişkenler
+MAX_PIN_ATTEMPTS <- 3
+DAILY_LIMIT <- 2000            // günlük çekim limiti (örnek)
+NOTE_UNIT <- 20                // en küçük banknot birimi
+cardInserted <- false
+sessionActive <- false
+
+// Fonksiyonlar (sadeleştirilmiş)
+function authenticatePIN(account):
+    attempts <- 0
+    while attempts < MAX_PIN_ATTEMPTS:
+        pin <- prompt("Lütfen PIN giriniz:")
+        if pin == account.pin:
+            return true
+        else:
+            attempts <- attempts + 1
+            print("Hatalı PIN. Kalan deneme: " + (MAX_PIN_ATTEMPTS - attempts))
+    // 3 hatalı giriş
+    account.blocked <- true
+    print("Kart bloke oldu. Banka ile iletişime geçiniz.")
+    return false
+
+function canWithdraw(account, amount):
+    if amount % NOTE_UNIT != 0:
+        print("Lütfen " + NOTE_UNIT + " TL'nin katları şeklinde bir tutar giriniz.")
+        return false
+    if amount > account.balance:
+        print("Yetersiz bakiye.")
+        return false
+    if (account.withdrawnToday + amount) > DAILY_LIMIT:
+        print("Günlük limit aşılıyor. Kalan limit: " + (DAILY_LIMIT - account.withdrawnToday))
+        return false
+    return true
+
+function dispenseCash(amount):
+    // Gerçekte kasa mekanizması çalışır
+    print(amount + " TL veriliyor...")
+    // burada not dağılımı hesaplanabilir
+    print("Fiş hazırlanıyor...")
+
+// Ana program
+while true:
+    wait until cardInserted = true
+    sessionActive <- true
+    card <- readCard()
+    if card == null:
+        continue
+
+    // Kart kontrolü
+    if card.account.blocked:
+        print("Kart bloke. İşlem yapılamaz.")
+        ejectCard()
+        sessionActive <- false
+        cardInserted <- false
+        continue
+
+    // PIN doğrulama
+    if not authenticatePIN(card.account):
+        // Kart bloke olduysa oturumu bitir
+        ejectCard()
+        sessionActive <- false
+        cardInserted <- false
+        continue
+
+    // İşlem döngüsü (birden fazla işlem yapma imkanı)
+    repeatTransaction <- true
+    while repeatTransaction:
+        print("1) Bakiye sorgula")
+        print("2) Para çek")
+        print("3) Kart iade / Çıkış")
+        choice <- prompt("Seçiminiz:")
+
+        if choice == "1":
+            print("Hesap bakiyesi: " + card.account.balance + " TL")
+            print("Bugün çekilen toplam: " + card.account.withdrawnToday + " TL")
+
+        else if choice == "2":
+            // Miktar alma ve kontroller
+            amount <- toInteger(prompt("Çekilmek istenen tutarı giriniz:"))
+            if canWithdraw(card.account, amount):
+                // Hesaptan düş ve günlük toplamı güncelle
+                card.account.balance <- card.account.balance - amount
+                card.account.withdrawnToday <- card.account.withdrawnToday + amount
+                dispenseCash(amount)
+                print("İşlem başarılı. Kalan bakiye: " + card.account.balance + " TL")
+            // canWithdraw içindeki mesajlar gerekli yönlendirmeyi yapar
+
+        else if choice == "3":
+            print("Kart iade ediliyor...")
+            ejectCard()
+            sessionActive <- false
+            cardInserted <- false
+            repeatTransaction <- false
+            break
+
+        else:
+            print("Geçersiz seçim.")
+
+        // Başka işlem yapmak ister misiniz?
+        if sessionActive:
+            cont <- prompt("Başka işlem yapmak ister misiniz? (E/H):")
+            if cont == "H" or cont == "h":
+                print("Kart iade ediliyor...")
+                ejectCard()
+                sessionActive <- false
+                cardInserted <- false
+                repeatTransaction <- false
+
+    // Oturum sonu, döngü başa döner (yeni kart beklenir)
+end while
+
+
+İstersen bu pseudocode'u daha ayrıntılı hâle getirip fonksiyonlar için hata durumlarını, günlük limitin hesaplanmasını (tarih kontrolü), veya banka not dağılım algoritmasını da ekleyeyim. Hangi detayları genişleteyim?
+
+You said:
+bu kodu dot graphiz koduna çevir 
+ChatGPT said:
+
+Harika 👍
+Aşağıda ATM Para Çekme Sistemi için yukarıdaki pseudocode’a karşılık gelen Graphviz DOT akış diyagramı kodunu bulabilirsin.
+Bu kodu .dot uzantılı bir dosya olarak kaydedip Graphviz
+ gibi çevrim içi bir araçta görselleştirebilirsin.
+
+digraph ATM_System {
+    rankdir=TB;
+    node [shape=rectangle, style=rounded, fontname="Arial"];
+
+    Start [label="Başlangıç", shape=circle, style=filled, fillcolor=lightblue];
+    CardInserted [label="Kart takıldı mı?"];
+    ReadCard [label="Kart okunuyor"];
+    BlockCheck [label="Kart bloke mi?"];
+    PIN_Auth [label="PIN gir\n(3 hakkınız var)"];
+    PIN_Correct [label="PIN doğru mu?"];
+    BlockCard [label="Kart bloke edildi\n3 yanlış giriş"];
+    Menu [label="İşlem Menüsü:\n1) Bakiye\n2) Para Çek\n3) Çıkış"];
+    CheckBalance [label="Bakiye görüntüle"];
+    EnterAmount [label="Çekilecek tutarı gir"];
+    CheckAmount [label="20 TL'nin katı mı?"];
+    CheckBalanceAvail [label="Yeterli bakiye var mı?"];
+    CheckDailyLimit [label="Günlük limit aşılmış mı?"];
+    DispenseCash [label="Para veriliyor\nFiş hazırlanıyor"];
+    UpdateBalance [label="Bakiye güncelleniyor"];
+    AnotherTransaction [label="Başka işlem yapmak ister misiniz?"];
+    Exit [label="Kart iade edildi\nOturum kapandı", shape=doublecircle, style=filled, fillcolor=lightgrey];
+
+    // Akışlar
+    Start -> CardInserted;
+    CardInserted -> ReadCard [label="Evet"];
+    CardInserted -> Start [label="Hayır"];
+    ReadCard -> BlockCheck;
+    BlockCheck -> Exit [label="Evet"];
+    BlockCheck -> PIN_Auth [label="Hayır"];
+    PIN_Auth -> PIN_Correct;
+    PIN_Correct -> Menu [label="Evet"];
+    PIN_Correct -> BlockCard [label="3 hatalı giriş"];
+    BlockCard -> Exit;
+
+    // Menü akışı
+    Menu -> CheckBalance [label="1"];
+    Menu -> EnterAmount [label="2"];
+    Menu -> Exit [label="3"];
+
+    CheckBalance -> AnotherTransaction;
+    EnterAmount -> CheckAmount;
+    CheckAmount -> EnterAmount [label="Hayır"];
+    CheckAmount -> CheckBalanceAvail [label="Evet"];
+    CheckBalanceAvail -> EnterAmount [label="Yetersiz bakiye"];
+    CheckBalanceAvail -> CheckDailyLimit [label="Yeterli bakiye"];
+    CheckDailyLimit -> EnterAmount [label="Limit aşıldı"];
+    CheckDailyLimit -> DispenseCash [label="Uygun"];
+    DispenseCash -> UpdateBalance;
+    UpdateBalance -> AnotherTransaction;
+
+    AnotherTransaction -> Menu [label="Evet"];
+    AnotherTransaction -> Exit [label="Hayır"];
+}
+
+
+🎯 Nasıl kullanılır:
+
+Bu kodu bir .dot dosyasına (örneğin atm_flow.dot) kaydet.
+
+Graphviz Online
+ sitesine git.
+
+Kodunu yapıştır.
+
+“Generate Graph” veya “Render” tuşuna basarak akış diyagramını gör.
+
+İstersen bu diyagramı renklendirilmiş (ör. hata yolları kırmızı, başarılı yollar yeşil) bir sürüm olarak da hazırlayayım — ister misin?
+
+You said:
+bunun için kisa açiklama yaz 
+ChatGPT said:
+
+Tabii 👍 İşte yukarıdaki ATM Para Çekme Sistemi Graphviz diyagramı için kısa ve net bir açıklama:
+
+💡 Kısa Açıklama
+
+Bu akış diyagramı, bir ATM para çekme sisteminin temel çalışma mantığını göstermektedir.
+Süreç, kartın takılmasıyla başlar ve aşağıdaki adımları izler:
+
+Kart ve PIN doğrulama:
+Kullanıcı kartını takar, sistem kartın bloke olup olmadığını kontrol eder.
+Kullanıcıya PIN sorulur; 3 yanlış denemeden sonra kart bloke edilir.
+
+Ana menü işlemleri:
+
+Bakiye sorgulama
+
+Para çekme
+
+Çıkış (kart iadesi)
+
+Para çekme adımları:
+Kullanıcı çekmek istediği tutarı girer.
+Sistem şu kontrolleri yapar:
+
+Tutar 20 TL’nin katı mı?
+
+Hesapta yeterli bakiye var mı?
+
+Günlük limit aşılmış mı?
+
+Tüm kontroller uygunsa, para verilir ve fiş hazırlanır.
+
+İşlem tekrarı:
+Kullanıcı isterse başka bir işlem yapabilir, istemezse kart iade edilir ve oturum sonlanır.
+
+İstersen bu açıklamayı diyagramın altına Graphviz notu (label) olarak ekleyebilirim, böylece görselde de kısa açıklama görünür. Ekleyeyim mi?
+
+You said:
+bunun için kisa açiklama yaz 5-6 satırdan
+ChatGPT said:
+
+Bu diyagram, ATM para çekme sisteminin temel işleyişini göstermektedir.
+Kullanıcı kartını takar ve PIN doğrulaması yapılır; üç hatalı girişte kart bloke olur.
+Doğrulama sonrası kullanıcı, bakiye sorgulama veya para çekme işlemlerinden birini seçer.
+Para çekme işleminde tutarın 20 TL’nin katı olup olmadığı, bakiye ve günlük limit kontrol edilir.
+Tüm koşullar sağlanırsa para verilir ve fiş hazırlanır.
+İşlem sonunda kullanıcı isterse başka bir işlem yapabilir veya kartını alarak oturumu sonlandırır.
